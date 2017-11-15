@@ -39,7 +39,7 @@ docker build -t index.alauda.cn/claas/dubbo-demo-consumer:dubbo2.5.3 .
 </pre>
 
 ## Run on Alauda Cloud
-Use [dubbo.yaml](dubbo.yaml) as template to create an application on Alauda Cloud.
+Use [dubbo.yml](./dubbo.yml) as template to create an application on Alauda Cloud.
 
 ### Zookeeper Cluster
 * 3 nodes
@@ -67,7 +67,7 @@ Use [dubbo.yaml](dubbo.yaml) as template to create an application on Alauda Clou
 	* `ZK_URL=zoo1:2181`
 
 ### Links Statements 
-* The **links** statements indicate dependency relationship among services defined in [dubbo.yaml](dubbo.yaml). Use **Strict Mode** to create your application on Alauda Cloud.
+* The **links** statements indicate dependency relationship among services defined in [dubbo.yml](./dubbo.yml). Use **Strict Mode** to create your application on Alauda Cloud.
 
 ### Verify 
 create a ssh tunnel to the K8s master node mastering your dubbo-admin pod.
