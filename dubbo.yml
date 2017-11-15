@@ -1,0 +1,107 @@
+zoo1:
+  size: XS
+  environment: 
+  - ZOO_TICK_TIME=2000
+  - ZOO_DATA_LOG_DIR=/zookeeper/datalog
+  - ZOO_DATA_DIR=/zookeeper/data
+  - ZOO_MY_ID=1
+  - ZOO_INIT_LIMIT=10
+  - ZOO_SYNC_LIMIT=5
+  - ZOO_SERVERS=server.1=172.20.10.5:2888:3888 server.2=172.20.10.6:2888:3888 server.3=172.20.10.7:2888:3888
+  image: index.alauda.cn/claas/catalog-zookeeper:3.5.0
+  labels:
+  - constraint:node==ip:172.20.10.5
+  net: host
+  alauda_lb: ALB
+  ports:
+  - 2181
+  - 2888
+  - 3888
+  volumes:
+  - /zookeeper/data:/zookeeper/data
+  - /zookeeper/datalog:/zookeeper/datalog
+zoo2:
+  size: XS
+  environment:
+  - ZOO_TICK_TIME=2000
+  - ZOO_DATA_LOG_DIR=/zookeeper/datalog
+  - ZOO_DATA_DIR=/zookeeper/data
+  - ZOO_MY_ID=2
+  - ZOO_INIT_LIMIT=10
+  - ZOO_SYNC_LIMIT=5
+  - ZOO_SERVERS=server.1=172.20.10.5:2888:3888 server.2=172.20.10.6:2888:3888 server.3=172.20.10.7:2888:3888
+  image: index.alauda.cn/claas/catalog-zookeeper:3.5.0
+  labels: 
+  - constraint:node==ip:172.20.10.6
+  net: host
+  alauda_lb: ALB
+  ports:
+  - 2181
+  - 2888
+  - 3888
+  volumes:
+  - /zookeeper/data:/zookeeper/data
+  - /zookeeper/datalog:/zookeeper/datalog
+zoo3:
+  size: XS
+  environment:
+  - ZOO_TICK_TIME=2000
+  - ZOO_DATA_LOG_DIR=/zookeeper/datalog
+  - ZOO_DATA_DIR=/zookeeper/data
+  - ZOO_MY_ID=3
+  - ZOO_INIT_LIMIT=10
+  - ZOO_SYNC_LIMIT=5
+  - ZOO_SERVERS=server.1=172.20.10.5:2888:3888 server.2=172.20.10.6:2888:3888 server.3=172.20.10.7:2888:3888
+  image: index.alauda.cn/claas/catalog-zookeeper:3.5.0
+  labels:
+  - constraint:node==ip:172.20.10.7
+  net: host
+  alauda_lb: ALB
+  ports:
+  - 2181
+  - 2888
+  - 3888
+  volumes:
+  - /zookeeper/data:/zookeeper/data
+  - /zookeeper/datalog:/zookeeper/datalog
+
+dubbo:
+  size: M
+  environment:
+  - ZK_URL=zoo1:2181?backup=zoo2:2181,zoo3:2181
+  image: index.alauda.cn/claas/dubbo:alpine-jre8-tomcat8-dubbo2.5.3
+  net: flannel
+  ports:
+  - 8080
+  alauda_lb: ALB
+  number: 2
+  links:
+  - 'zoo1:zoo1'
+  - 'zoo2:zoo2'
+  - 'zoo3:zoo3'
+
+provider:
+  size: M
+  environment:
+  - ZK_URL=zoo1:2181,zoo2:2181,zoo3:2181
+  - DUBBO_PORT=20880
+  image: index.alauda.cn/claas/dubbo-demo-provider:dubbo2.5.3
+  net: flannel
+  ports:
+  - 20880
+  alauda_lb: ALB
+  links:
+  - 'dubbo:dubbo'
+
+consumer:
+  size: M
+  environment:
+  - ZK_URL=zoo1:2181,zoo2:2181,zoo3:2181
+  image: index.alauda.cn/claas/dubbo-demo-consumer:dubbo2.5.3
+  net: flannel
+  ports:
+  - 8080
+  alauda_lb: ALB
+  links:
+    - 'provider:provider'
+
