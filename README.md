@@ -4,7 +4,7 @@
 A dubbo demo running on Alauda Cloud. 
 
 ## Dubbo-Admin
-Code in [docker-admin](docker-admin)
+Dockerfile in [docker-admin](docker-admin/Dockerfile)
 
 ### Where to get dubbo-admin-2.5.3.war
 See: [dubbo 2.5.3 环境搭建](http://www.jianshu.com/p/6541f277f467)
@@ -24,7 +24,10 @@ Code in [dubbo-demo](dubbo-demo).
 Thanks to [binblee on github](https://github.com/binblee/dubbo-docker).
 
 ### Build demo
-`mvn clean package`
+<pre>
+cd dubbo-demo
+mvn clean package
+</pre>
 
 ### Build Provider Docker Image
 <pre>
@@ -34,7 +37,7 @@ docker build -t index.alauda.cn/claas/dubbo-demo-provider:dubbo2.5.3 .
 
 ### Build Consumer Docker Image
 <pre>
-dubbo-demo/service-consumer
+cd dubbo-demo/service-consumer
 docker build -t index.alauda.cn/claas/dubbo-demo-consumer:dubbo2.5.3 .
 </pre>
 
